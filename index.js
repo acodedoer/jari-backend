@@ -4,6 +4,8 @@ const { Text, Checkbox, Password, DateTime, Relationship } = require('@keystonej
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
+const expressSession = require('express-session');
+const MongoStore = require('connect-mongo')(expressSession);
 
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 
@@ -13,6 +15,7 @@ const keystone = new Keystone({
   name: PROJECT_NAME,
   adapter: new Adapter(),
   onConnect: initialiseData,
+  sessionStore: new MongoStore({ url: 'mongodb://localhost/jar' }),
 });
 
 // Access control functions
