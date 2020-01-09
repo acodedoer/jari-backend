@@ -6,16 +6,21 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
 const expressSession = require('express-session');
 const MongoStore = require('connect-mongo')(expressSession);
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
-const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
+
+const uri = "mongodb+srv://admin:SB26RGZKy7XYe6RR@cluster0-4cilm.mongodb.net/test?retryWrites=true&w=majority";
+
 
 const PROJECT_NAME = "Jari";
 
 const keystone = new Keystone({
+
+
   name: PROJECT_NAME,
-  adapter: new Adapter(),
+  adapter: new MongooseAdapter({mongoUri:uri}),
   onConnect: initialiseData,
-  sessionStore: new MongoStore({ url: 'mongodb://localhost/jar' }),
+  sessionStore: new MongoStore({ url: uri}),
 });
 
 // Access control functions
