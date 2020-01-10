@@ -16,6 +16,7 @@ const PROJECT_NAME = "Jari";
 
 const keystone = new Keystone({
   name: PROJECT_NAME,
+  secureCookies: false,
   adapter: new MongooseAdapter({mongoUri:uri}),
   onConnect: initialiseData,
   sessionStore: new MongoStore({ url: uri}),
