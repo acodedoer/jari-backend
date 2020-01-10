@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const { Text, Checkbox, Password, DateTime, Relationship } = require('@keystonejs/fields');
+const { Text, Checkbox, Password, DateTime, Relationship, Slug } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
@@ -38,14 +38,18 @@ const userIsAdminOrOwner = auth => {
 const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
 
 keystone.createList('Proverb', {
-  labelField: 'tag',
+  labelField: 'id',
   fields: {
-    langauge: { type: Text },
-    proverb: {type: Text, index: true},
-    created: {type: DateTime},
-    modified: {type: DateTime},
+    id: {
+      type: Slug,
+      from: 'proverb'},
+    proverb: {type: Text, isUnique: true, index: true},
+    transalation: {type: Text, isMultiline:true},
+    description: {type: Text, isMultiline:true},
     LiteralTags: {type: Relationship, ref: 'LiteralTag', many: true },
-    MetaphoricalTags: {type: Relationship, ref: 'MetaphoricalTag', many: true }
+    MetaphoricalTags: {type: Relationship, ref: 'MetaphoricalTag', many: true },
+    created: {type: DateTime, format:"DD/MM/YYYY h:mm", default: Date.now},
+    modified: {type: DateTime, format:"DD/MM/YYYY h:mm", default: Date.now},
   },
   access: {
     read:access.userIsAdmin,
