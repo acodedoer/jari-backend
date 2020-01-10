@@ -4,6 +4,7 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password, DateTime, Relationship, Slug } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { StaticApp } = require('@keystonejs/app-static');
 const initialiseData = require('./initial-data');
 const expressSession = require('express-session');
 const MongoStore = require('connect-mongo')(expressSession);
@@ -38,11 +39,8 @@ const userIsAdminOrOwner = auth => {
 const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
 
 keystone.createList('Proverb', {
-  labelField: 'id',
+  labelField: 'modified',
   fields: {
-    id: {
-      type: Slug,
-      from: 'proverb'},
     proverb: {type: Text, isUnique: true, index: true},
     transalation: {type: Text, isMultiline:true},
     description: {type: Text, isMultiline:true},
@@ -176,6 +174,11 @@ module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
+    new StaticApp({
+      path: '/',
+      src: 'public',
+      fallback: 'index.html',
+    }),
     new AdminUIApp({
       enableDefaultRoute: true,
       authStrategy,
