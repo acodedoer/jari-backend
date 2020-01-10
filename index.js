@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password, DateTime, Relationship } = require('@keystonejs/fields');
@@ -9,14 +10,11 @@ const MongoStore = require('connect-mongo')(expressSession);
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 
-const uri = "mongodb+srv://admin:SB26RGZKy7XYe6RR@cluster0-4cilm.mongodb.net/test?retryWrites=true&w=majority";
-
+const uri = process.env.MONGO_URI;
 
 const PROJECT_NAME = "Jari";
 
 const keystone = new Keystone({
-
-
   name: PROJECT_NAME,
   adapter: new MongooseAdapter({mongoUri:uri}),
   onConnect: initialiseData,
