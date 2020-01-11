@@ -38,15 +38,15 @@ const userIsAdminOrOwner = auth => {
 const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
 
 keystone.createList('Proverb', {
-  labelField: 'modified',
+  labelField: 'proverb',
   fields: {
-    proverb: {type: Text, isUnique: true, index: true},
+    proverb: {type: Text, isUnique: true, index: true, isRequired:true},
     transalation: {type: Text, isMultiline:true},
     description: {type: Text, isMultiline:true},
-    LiteralTags: {type: Relationship, ref: 'LiteralTag', many: true },
-    MetaphoricalTags: {type: Relationship, ref: 'MetaphoricalTag', many: true },
-    created: {type: DateTime, format:"DD/MM/YYYY h:mm", default: Date.now},
-    modified: {type: DateTime, format:"DD/MM/YYYY h:mm", default: Date.now},
+    literalTags: {type: Relationship, ref: 'LiteralTag', many: true, isRequired:true },
+    metaphoricalTags: {type: Relationship, ref: 'MetaphoricalTag', many: true, isRequired:true },
+    created: {type: DateTime, isRequired:true, format:"DD/MM/YYYY h:mm", defaultValue: new Date(), access:{update:false}},
+    modified: {type: DateTime, isRequired:true, format:"DD/MM/YYYY h:mm", defaultValue: new Date()},
   },
   access: {
     read:access.userIsAdmin,
