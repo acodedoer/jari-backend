@@ -1,13 +1,14 @@
 require('dotenv').config();
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const { Text, Checkbox, Password, DateTime, Relationship, Slug } = require('@keystonejs/fields');
+const { Text, Checkbox, Password, Relationship } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
 const expressSession = require('express-session');
 const MongoStore = require('connect-mongo')(expressSession);
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { atTracking, byTracking } = require('@keystonejs/list-plugins');
 
 
 const uri = process.env.MONGO_URI;
@@ -41,18 +42,18 @@ keystone.createList('Proverb', {
   labelField: 'proverb',
   fields: {
     proverb: {type: Text, isUnique: true, index: true, isRequired:true},
-    transalation: {type: Text, isMultiline:true},
-    description: {type: Text, isMultiline:true},
     literalTags: {type: Relationship, ref: 'LiteralTag', many: true, isRequired:true },
     metaphoricalTags: {type: Relationship, ref: 'MetaphoricalTag', many: true, isRequired:true },
-    created: {type: DateTime, isRequired:true, format:"DD/MM/YYYY h:mm", defaultValue: new Date(), access:{update:false}},
-    modified: {type: DateTime, isRequired:true, format:"DD/MM/YYYY h:mm", defaultValue: new Date()},
+    publish:{ type: Checkbox, isRequired:true },
+    transalation: {type: Text, isMultiline:true},
+    description: {type: Text, isMultiline:true}
   },
-  access: {
-    read:access.userIsAdmin,
-    update: access.userIsAdmin,
-    create: access.userIsAdmin,
-    delete: access.userIsAdmin,
+  plugins: [
+    atTracking({format:"DDMMYY H:mm"}),
+    byTracking({})
+  ],
+  access:{
+    delete:access.userIsAdmin,
   }
 });
 
@@ -69,10 +70,14 @@ keystone.createList('MetaphoricalTag', {
       ref: 'MetaphoricalTagParent.children'
     }
   },
+  plugins: [
+    atTracking({format:"DDMMYY H:mm"}),
+    byTracking({})
+  ],
   access: {
     read:true,
     update: access.userIsAdmin,
-    create: access.userIsAdmin,
+    create:true,
     delete: access.userIsAdmin,
   }
 });
@@ -91,10 +96,14 @@ keystone.createList('MetaphoricalTagParent', {
       many:true
     }
   },
+  plugins: [
+    atTracking({format:"DDMMYY H:mm"}),
+    byTracking({})
+  ],
   access: {
     read:true,
     update: access.userIsAdmin,
-    create: access.userIsAdmin,
+    create: true,
     delete: access.userIsAdmin,
   }
 });
@@ -112,10 +121,14 @@ keystone.createList('LiteralTag', {
       ref: 'LiteralTagParent.children'
     }
   },
+  plugins: [
+    atTracking({format:"DDMMYY H:mm"}),
+    byTracking({})
+  ],
   access: {
     read:true,
     update: access.userIsAdmin,
-    create: access.userIsAdmin,
+    create: true,
     delete: access.userIsAdmin,
   }
 });
@@ -134,10 +147,14 @@ keystone.createList('LiteralTagParent', {
       many:true
     }
   },
+  plugins: [
+    atTracking({format:"DDMMYY H:mm"}),
+    byTracking({})
+  ],
   access: {
     read:true,
     update: access.userIsAdmin,
-    create: access.userIsAdmin,
+    create: true,
     delete: access.userIsAdmin,
   }
 });
@@ -155,6 +172,10 @@ keystone.createList('User', {
       type: Password,
     },
   },
+  plugins: [
+    atTracking({format:"DDMMYY H:mm"}),
+    byTracking({})
+  ],
   access: {
     read: access.userIsAdminOrOwner,
     update: access.userIsAdminOrOwner,

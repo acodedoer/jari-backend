@@ -1820,6 +1820,13 @@
     pluralize "^7.0.0"
     terminal-link "^1.3.0"
 
+"@keystonejs/list-plugins@^5.0.0":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@keystonejs/list-plugins/-/list-plugins-5.0.2.tgz#8bb21d464b94c616f243c8674bf2bc8deb6f3d1b"
+  integrity sha512-P/jDZT1ygIEeduVt0Hq5+8fUp5SByP1D//IvNpSJ+AzPH3po0YEqEUmWsV+CgSiPPyKIX94Ao5iAsaedRsiyIA==
+  dependencies:
+    "@keystonejs/fields" "^6.0.2"
+
 "@keystonejs/logger@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@keystonejs/logger/-/logger-5.0.0.tgz#ce72b8f61e484db97683edf15b37f9f246922cb3"
