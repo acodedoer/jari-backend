@@ -70,6 +70,9 @@ keystone.createList('MetaphoricalTag', {
       ref: 'MetaphoricalTagParent.children'
     }
   },
+  adminConfig: {
+    defaultSort: 'tag'
+  },
   plugins: [
     atTracking({format:"DDMMYY H:mm"}),
     byTracking({})
@@ -120,6 +123,9 @@ keystone.createList('LiteralTag', {
       type: Relationship,
       ref: 'LiteralTagParent.children'
     }
+  },  
+  adminConfig: {
+    defaultSort: 'tag'
   },
   plugins: [
     atTracking({format:"DDMMYY H:mm"}),
