@@ -10,10 +10,9 @@ const MongoStore = require('connect-mongo')(expressSession);
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const { atTracking, byTracking } = require('@keystonejs/list-plugins');
 
-
 const uri = process.env.MONGO_URI;
 
-const PROJECT_NAME = "Jari";
+const PROJECT_NAME = "Jari-Backend";
 
 const keystone = new Keystone({
   name: PROJECT_NAME,
@@ -39,9 +38,8 @@ const userIsAdminOrOwner = auth => {
 const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
 
 keystone.createList('Proverb', {
-  labelField: 'proverb',
   fields: {
-    proverb: {type: Text, isUnique: true, index: true, isRequired:true},
+    name: {type: Text, isUnique: true, index: true, isRequired:true},
     literalTags: {type: Relationship, ref: 'LiteralTag', many: true, isRequired:true },
     metaphoricalTags: {type: Relationship, ref: 'MetaphoricalTag', many: true, isRequired:true },
     publish:{ type: Checkbox, isRequired:true },
@@ -58,9 +56,8 @@ keystone.createList('Proverb', {
 });
 
 keystone.createList('MetaphoricalTag', {
-  labelField: 'tag',
   fields:{
-    tag: {
+    name: {
       type: Text,
       isUnique: true,
       isRequired: true
@@ -86,9 +83,8 @@ keystone.createList('MetaphoricalTag', {
 });
 
 keystone.createList('MetaphoricalTagParent', {
-  labelField: 'tag',
   fields:{
-    tag: {
+    name: {
       type: Text,
       isUnique: true,
       isRequired: true
@@ -112,9 +108,8 @@ keystone.createList('MetaphoricalTagParent', {
 });
 
 keystone.createList('LiteralTag', {
-  labelField: 'tag',
   fields:{
-    tag: {
+    name: {
       type: Text,
       isUnique: true,
       isRequired: true
@@ -140,9 +135,8 @@ keystone.createList('LiteralTag', {
 });
 
 keystone.createList('LiteralTagParent', {
-  labelField: 'tag',
   fields:{
-    tag: {
+    name: {
       type: Text,
       isUnique: true,
       isRequired: true
