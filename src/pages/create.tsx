@@ -36,7 +36,7 @@ export const Create = () => {
     }
 
     return (
-        <div id="create-container">
+        <div className="pt-[56px]">
             <h2>Create Saying</h2>
             <form onSubmit={onSubmit}>
                 <label htmlFor="saying">Saying</label>

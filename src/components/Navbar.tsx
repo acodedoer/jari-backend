@@ -1,9 +1,10 @@
-import {Link, useNavigate} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {useCookies} from 'react-cookie';
-
+import { ArrowRightOnRectangleIcon, PlusIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid'
 export const Navbar = () => {
     const [cookies, setCookies] = useCookies(["access_token"]);
     const navigate = useNavigate();
+    const location = useLocation();
     
     const logout = () => {
         setCookies("access_token","");
@@ -12,12 +13,11 @@ export const Navbar = () => {
     }
 
     return(
-    <header className='w-full fixed flex flex-row justify-center p-3 bg-secondary'>
-        <div className="w-6/12 flex flex-row justify-around">
-            <Link to={"/"} className='text-white rounded-md hover:text-white bg-primary p-1'>Home</Link>
-            <Link to={"/create"} className='text-white rounded-md hover:text-primary p-1' >Add Saying</Link>
-            <Link to={"/view"} className='text-white rounded-md hover:text-primary p-1' >View Sayings</Link>
-            {!cookies.access_token?(<Link to={"/auth"} className='text-white rounded-md hover:text-primary p-1' >Login/Register</Link>):<button onClick={logout}>Logout</button>}
+    <header className='w-full fixed flex flex-row justify-between p-3 px-8 bg-secondary'>
+            <Link to={"/"} className={`text-white rounded-md ${location.pathname==="/"? "bg-primary":"hover:text-primary"} p-1 px-4`}>jari</Link>
+        <div className="flex flex-row justify-center items-center">
+        {cookies.access_token?<Link to={"/create"} ><PlusIcon className={`rounded-md h-6 w-6 text-white mr-8 ${location.pathname==="/create"? "bg-primary":"hover:text-primary"}`}/></Link>:null}
+            {!cookies.access_token?(<Link to={"/auth"}  ><ArrowRightOnRectangleIcon className={`rounded-md ${location.pathname==="/auth"? "bg-primary":"hover:text-primary"} h-6 w-6 text-white`}/></Link>):(<ArrowLeftOnRectangleIcon onClick={logout} className="rounded-md hover:text-primary  h-6 w-6 text-white"/>)}
         </div>
     </header>
     )
