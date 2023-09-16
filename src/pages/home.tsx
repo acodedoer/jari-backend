@@ -18,6 +18,8 @@ type Saying = {
 
 export const Home = () => {
     const [sayings, setSayings] = useState([]);
+    const [refresh, setRefresh] = useState(true);
+
 
     useEffect(() => {
         const fetchSayings = async () => {
@@ -32,20 +34,27 @@ export const Home = () => {
             }
         };
 
-        fetchSayings();
-    },[])
+        if(refresh){
+            fetchSayings();
+            setRefresh(false);
+        }
+    },[refresh])
 
     return(
         <div className="pt-[56px] w-full flex flex-col items-center">
-            {sayings.map((el:Saying)=><Saying data={el}/>)}
+            {sayings.map((el:Saying)=><Saying data={el} onDelete={()=>setRefresh(true)}/>)}
         </div>
     )
 }
 
-const Saying = ({data}: any) => {
+const Saying = ({data, onDelete}: any) => {
+    const deleteSaying = async (id:string) => {
+        await axios.delete(`http://localhost:8080/sayings/${id}`)
+        .then(()=>onDelete());
+    }
     return(
-        <div className="flex flex-row justify-start group">
-            <div className="rounded-md relative p-4 m-4 mr-0 min-w-[500px] shadow-sm bg-white">
+        <div className="flex flex-row justify-center group w-600">
+            <div className="rounded-md relative p-4 m-4 min-w-[500px] shadow-sm bg-white">
                 <div className="flex flex-row mb-2 justify-between border-b-2 border-primary">
                     <p className="text-xs">Created:{new Date(data.created).toLocaleDateString()}</p>
                     <p className="text-xs">Last Edited:{new Date(data.created).toLocaleDateString()}</p>
@@ -53,9 +62,9 @@ const Saying = ({data}: any) => {
                 <p className="mb-1">{data.saying}</p>
                 {data.tags.map((el:any)=><Tag data={el}/>)}
             </div>
-            <div className="hidden group-hover:flex flex-col w-full justify-between p-4 m-4 ml-0 pl-2">
+            <div className="hidden group-hover:flex flex-col justify-between mt-6 mb-6">
                 <button className="hover:opacity-50"><PencilSquareIcon className="h-5 w-5 text-primary"/></button>
-                <button className="hover:opacity-50"><TrashIcon className="h-5 w-5 text-primary"/></button>   
+                <button onClick={()=>deleteSaying(data._id)} className="hover:opacity-50"><TrashIcon className="h-5 w-5 text-primary"/></button>   
             </div>
         </div>
     )
