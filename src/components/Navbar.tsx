@@ -13,7 +13,7 @@ export const Navbar = () => {
     }
 
     return(
-    <header className='w-full fixed flex flex-row justify-between p-3 px-8 bg-secondary'>
+    <header className='w-full fixed flex flex-row justify-between p-3 px-8 bg-secondary z-50'>
             <Link to={"/"} className={`text-white rounded-md ${location.pathname==="/"? "bg-primary":"hover:text-primary"} p-1 px-4`}>jari</Link>
         <div className="flex flex-row justify-center items-center">
         {cookies.access_token?<Link to={"/create"} ><PlusIcon className={`rounded-md h-6 w-6 text-white mr-8 ${location.pathname==="/create"? "bg-primary":"hover:text-primary"}`}/></Link>:null}
