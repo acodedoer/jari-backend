@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 export const SayingForm = ({onSubmitCallback, data, action="Create"}:any) => {
     const [saying, setSaying] = useState(data)
     const [tags, setTags] = useState([]);
-
-    const navigate = useNavigate();
   
     const onSubmit = (event:any) =>{
         event.preventDefault();
@@ -18,14 +16,29 @@ export const SayingForm = ({onSubmitCallback, data, action="Create"}:any) => {
       if(i<5){
         const temp:any = [...saying.tags];
         temp[i] = tag;
-        setSaying({...saying, tags:temp})
+        if(action==="Update"){
+            const temp_:any = [...saying.tagDetails];
+            const newTag:any = tags.find((el:any)=>el._id===tag);
+            temp_[i] = {_id:tag, name:newTag.name};
+            setSaying({...saying, tags:temp, tagDetails:temp_});
+        }
+        else{
+            setSaying({...saying, tags:temp});
+        }
       }
     }
     
     const removeTag = (i:any) => {
       const temp = [...saying.tags];
       temp.splice(i,1);
-      setSaying({...saying, tags:temp})
+      if(action==="Update"){
+          const temp_ = [...saying.tagDetails];
+          temp_.splice(i,1);
+          setSaying({...saying, tags:temp, tagDetails:temp_});
+      }
+      else{
+        setSaying({...saying, tags:temp});
+      }
     }
 
     const onLoadPage = async () => {
@@ -71,7 +84,7 @@ export const SayingForm = ({onSubmitCallback, data, action="Create"}:any) => {
             {
                 saying.tags.map((tag:any,i:number)=><div className="flex flex-row justify-start items-center w-full">
                 <select className="pt-1 pb-1 mt-1 mb-1 rounded-md w-full shadow-sm ring-1  ring-background"  value={tag} onChange={(e)=> setTag(e.target.value,i)}>
-                    {tags.map((opt:any)=><option value={opt._id}> {opt.name} </option>)}
+                    {tags.map((opt:any)=><option value={opt._id}  className={`${saying.tags.findIndex((el:any)=> el ===opt._id)!= -1?"hidden":""}`} > {opt.name} </option>)}
                 </select>
                 {i>=1?<button type="button" onClick={()=>removeTag(i)} className="bg-primary ml-4 rounded-md h-6 w-6 hover:opacity-50"><MinusIcon className="h-6 w-6 text-white"/></button>:null}
                 </div>

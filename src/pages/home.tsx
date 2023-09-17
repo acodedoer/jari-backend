@@ -8,7 +8,7 @@ import { isEditable } from "@testing-library/user-event/dist/utils";
 
 type Saying = {
     saying: String
-    tags: String,
+    tags: [],
     created: Date,
     edited: Date,
     likes: Number,
@@ -22,6 +22,16 @@ export const Home = () => {
     const [sayings, setSayings] = useState<Saying[]>([]);
     const [refresh, setRefresh] = useState(true);
 
+    const fetchSayingByTag = async (tag:string) => {
+        try {
+            await axios.get(`http://localhost:8080/sayings/${tag}`)
+            .then((response)=>{
+                setSayings(response.data); 
+            })
+        } catch (error) {
+            alert(error);
+        }
+    };
 
     useEffect(() => {
         const fetchSayings = async () => {
@@ -44,12 +54,12 @@ export const Home = () => {
 
     return(
         <div className="pt-[56px] w-full flex flex-col items-center">
-            {sayings.map((el:Saying, i:number)=><Saying index={i} data={el} onEdit = {(data:any)=>{const temp = [...sayings]; temp[i]=data; setSayings(temp) }} onDelete={()=>setRefresh(true)}/>)}
+            {sayings.map((el:Saying, i:number)=><Saying  fetchSayingByTag={fetchSayingByTag} index={i} data={el} onEdit = {(data:any)=>{const temp = [...sayings]; temp[i]=data; setSayings(temp) }} onDelete={()=>setRefresh(true)}/>)}
         </div>
     )
 }
 
-const Saying = ({data, onDelete, onEdit}: any) => {
+const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
     
     const onSubmit = async (data:any) => {
         const temp = {...data};
@@ -101,11 +111,11 @@ const Saying = ({data, onDelete, onEdit}: any) => {
                 </div>
             {!isEditing?<>
                 <p className="mb-1">{data.saying}</p>
-                {data.tags.map((el:any)=><Tag data={el}/>)}
+                {data.tagDetails.map((el:any)=><Tag data={el} fetchSayingByTag={fetchSayingByTag}/>)}
                 </>:
                 <>
-                <p className="mb-8"></p>
-                <SayingForm action={"Update"} onSubmitCallback={onSubmit} data={data}/>
+                    <p className="mb-8"></p>
+                    <SayingForm action={"Update"} onSubmitCallback={onSubmit} data={data}/>
                 </>
             }
             </div>
@@ -118,10 +128,10 @@ const Saying = ({data, onDelete, onEdit}: any) => {
     )
 }
 
-const Tag = ({data}:any) => {
+const Tag = ({data, fetchSayingByTag}:any) => { 
     return(
-        <button className="rounded-md text-xs text-white bg-primary p-1 mr-1 hover:opacity-50">
-            {data}
+        <button onClick={()=>fetchSayingByTag(data._id)} className="rounded-md text-xs text-white bg-primary p-1 mr-1 hover:opacity-50">
+            {data.name}
         </button>
     )
 }
