@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import { SayingForm } from "../components/SayingForm";
+import { isEditable } from "@testing-library/user-event/dist/utils";
 
 type Saying = {
     saying: String
@@ -76,15 +77,25 @@ const Saying = ({data, onDelete, onEdit}: any) => {
         }
       }
 
+    
     const [isEditing, setIsEditing] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const deleteSaying = async (id:string) => {
         await axios.delete(`http://localhost:8080/sayings/${id}`)
-        .then(()=>onDelete());
+        .then(()=>{
+            setIsDeleting(true);
+            setTimeout(()=>{onDelete()},400)
+        });
     }
+
+    useEffect(()=>{
+        setIsDeleting(false);
+    },[data])
+
     return(
-        <div onMouseLeave={()=>setIsEditing(false)} className="flex flex-row justify-center group w-600">
-            <div className="rounded-md relative p-4 m-4 min-w-[500px] shadow-sm bg-white">
-                <div className="flex flex-row mb-2 justify-between border-b-2 border-primary">
+        <div onMouseLeave={()=>setIsEditing(false)} className={`${isDeleting?"animate-remove":""} flex flex-row justify-center group max-w-[600px]`}>
+            <div className={`rounded-md relative p-4 m-4 min-w-[500px] max-w-[500px] shadow-sm bg-white`}>
+                <div className="flex flex-row mb-2 justify-between border-b-2 border-primary max">
                     <p className="text-xs">Created:{new Date(data.created).toLocaleDateString()}</p>
                     <p className="text-xs">Last Edited:{new Date(data.created).toLocaleDateString()}</p>
                 </div>
@@ -92,8 +103,10 @@ const Saying = ({data, onDelete, onEdit}: any) => {
                 <p className="mb-1">{data.saying}</p>
                 {data.tags.map((el:any)=><Tag data={el}/>)}
                 </>:
+                <>
+                <p className="mb-8"></p>
                 <SayingForm action={"Update"} onSubmitCallback={onSubmit} data={data}/>
-                
+                </>
             }
             </div>
             {!isEditing?

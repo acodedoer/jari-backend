@@ -45,9 +45,11 @@ export const Create = () => {
     
 
     return (
-        <div className="pt-[56px] w-screen h-screen flex flex-col items-center justify-center">
-            <h1 className="text-2xl">Add New Saying</h1>
-            <SayingForm onSubmitCallback={onSubmit} data={saying}/>
+        <div className="pt-[56px] w-screen h-screen flex flex-col items-center justify-start">
+            <h1 className="text-2xl m-8">Add New Saying</h1>
+            <div className="w-[416px] p-8 rounded-md shadow-sm bg-white">
+              <SayingForm  onSubmitCallback={onSubmit} data={saying}/>
+            </div>
           
         </div>
         
