@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import { SayingForm } from "../components/SayingForm";
-import { isEditable } from "@testing-library/user-event/dist/utils";
+import { FilterBar } from "../components/FilterBar";
 
 type Saying = {
     saying: String
@@ -18,43 +18,46 @@ type Saying = {
     lastEditor: mongoose.Schema.Types.ObjectId
 }
 
+interface filter{
+    modified: number,
+    tag:any
+}
 export const Home = () => {
     const [sayings, setSayings] = useState<Saying[]>([]);
     const [refresh, setRefresh] = useState(true);
+    const [filter, setFilter] = useState<filter>({
+        modified: -1,
+        tag:undefined
+    })
 
-    const fetchSayingByTag = async (tag:string) => {
-        try {
-            await axios.get(`http://localhost:8080/sayings/${tag}`)
-            .then((response)=>{
-                setSayings(response.data); 
-            })
-        } catch (error) {
-            alert(error);
-        }
+    const fetchSayings = async () => {
+        // try {
+        //     await axios.get(`http://localhost:8080/sayings/${filter.tag._id || ""}/${filter.modified}`)
+        //     .then((response)=>{
+        //         setSayings(response.data); 
+        //     })
+        // } catch (error) {
+        //     alert(error);
+        // }
     };
 
     useEffect(() => {
-        const fetchSayings = async () => {
-            try {
-                await axios.get("http://localhost:8080/sayings")
-                .then((response)=>{
-                    console.log(response.data)
-                    setSayings(response.data); 
-                })
-            } catch (error) {
-                alert(error);
-            }
-        };
-
         if(refresh){
             fetchSayings();
             setRefresh(false);
         }
-    },[refresh])
+    },[refresh, filter])
+
+    useEffect(() => {
+        fetchSayings();
+    },[filter])
+
 
     return(
         <div className="pt-[56px] w-full flex flex-col items-center">
-            {sayings.map((el:Saying, i:number)=><Saying  fetchSayingByTag={fetchSayingByTag} index={i} data={el} onEdit = {(data:any)=>{const temp = [...sayings]; temp[i]=data; setSayings(temp) }} onDelete={()=>setRefresh(true)}/>)}
+            <FilterBar filterCallback={setFilter} selectedTag={filter.tag}/>
+            
+            {sayings.map((el:Saying, i:number)=><Saying  fetchSayingByTag={(id:string)=>setFilter({...filter, tag:id})} index={i} data={el} onEdit = {(data:any)=>{const temp = [...sayings]; temp[i]=data; setSayings(temp) }} onDelete={()=>setRefresh(true)}/>)}
         </div>
     )
 }
@@ -105,9 +108,8 @@ const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
     return(
         <div onMouseLeave={()=>setIsEditing(false)} className={`${isDeleting?"animate-remove":""} flex flex-row justify-center group max-w-[600px]`}>
             <div className={`rounded-md relative p-4 m-4 min-w-[500px] max-w-[500px] shadow-sm bg-white`}>
-                <div className="flex flex-row mb-2 justify-between border-b-2 border-primary max">
-                    <p className="text-xs">Created:{new Date(data.created).toLocaleDateString()}</p>
-                    <p className="text-xs">Last Edited:{new Date(data.created).toLocaleDateString()}</p>
+                <div className="flex flex-row mb-2 justify-start border-b-2 border-primary max">
+                    <p className="text-xs">Modified:{new Date(data.created).toLocaleString()}</p>
                 </div>
             {!isEditing?<>
                 <p className="mb-1">{data.saying}</p>
