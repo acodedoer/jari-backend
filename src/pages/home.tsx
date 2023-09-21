@@ -1,7 +1,6 @@
 import axios from "axios";
 import mongoose from "mongoose";
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import { SayingForm } from "../components/SayingForm";
 import { FilterBar } from "../components/FilterBar";
@@ -20,25 +19,27 @@ type Saying = {
 
 interface filter{
     modified: number,
-    tag:any
+    tags:any[]
 }
 export const Home = () => {
     const [sayings, setSayings] = useState<Saying[]>([]);
     const [refresh, setRefresh] = useState(true);
     const [filter, setFilter] = useState<filter>({
         modified: -1,
-        tag:undefined
+        tags:[]
     })
 
     const fetchSayings = async () => {
-        // try {
-        //     await axios.get(`http://localhost:8080/sayings/${filter.tag._id || ""}/${filter.modified}`)
-        //     .then((response)=>{
-        //         setSayings(response.data); 
-        //     })
-        // } catch (error) {
-        //     alert(error);
-        // }
+        let tag = "";
+        filter.tags.forEach((el)=> {tag+=`${el._id},`})
+        try {
+            await axios.get(`http://localhost:8080/sayings/${tag}/${filter.modified}`)
+            .then((response)=>{
+                setSayings(response.data); 
+            })
+        } catch (error) {
+            alert(error);
+        }
     };
 
     useEffect(() => {
@@ -52,12 +53,21 @@ export const Home = () => {
         fetchSayings();
     },[filter])
 
-
     return(
-        <div className="pt-[56px] w-full flex flex-col items-center">
-            <FilterBar filterCallback={setFilter} selectedTag={filter.tag}/>
-            
-            {sayings.map((el:Saying, i:number)=><Saying  fetchSayingByTag={(id:string)=>setFilter({...filter, tag:id})} index={i} data={el} onEdit = {(data:any)=>{const temp = [...sayings]; temp[i]=data; setSayings(temp) }} onDelete={()=>setRefresh(true)}/>)}
+        <div className="pt-[56px] w-full flex flex-row justify-center relative">
+            <div className="absolute left-0">
+                <FilterBar filterCallback={setFilter} selectedTags={filter.tags}/>
+            </div>
+            <div>
+                {sayings.map((el:Saying, i:number)=>
+                    <Saying  
+                        fetchSayingByTag={(tag:any)=>setFilter({...filter, tags:[...filter.tags,tag]})} 
+                        index={i} 
+                        data={el}
+                        onEdit = {(data:any)=>{const temp = [...sayings]; temp[i]=data; setSayings(temp) }} onDelete={()=>setRefresh(true)}
+                    />)
+                }
+            </div>
         </div>
     )
 }
@@ -88,11 +98,11 @@ const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
         else{
           alert("You must add at least one tag")
         }
-      }
+    }
 
-    
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+
     const deleteSaying = async (id:string) => {
         await axios.delete(`http://localhost:8080/sayings/${id}`)
         .then(()=>{
@@ -132,7 +142,7 @@ const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
 
 const Tag = ({data, fetchSayingByTag}:any) => { 
     return(
-        <button onClick={()=>fetchSayingByTag(data._id)} className="rounded-md text-xs text-white bg-primary p-1 mr-1 hover:opacity-50">
+        <button onClick={()=>fetchSayingByTag(data)} className="rounded-md text-xs text-white bg-primary p-1 mr-1 hover:opacity-50">
             {data.name}
         </button>
     )

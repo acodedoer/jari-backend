@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-
+import { XCircleIcon } from "@heroicons/react/24/solid";
 export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
     
     const [tags, setTags] = useState([]);
@@ -11,11 +11,11 @@ export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
         tags: selectedTags
     })
 
-    // useEffect(()=>{
-    //     if(selectedTags.lenght != options.tags.length){
-    //         setOptions({...options,tags:selectedTags})
-    //     }
-    // }, [selectedTags])
+    useEffect(()=>{
+        if(selectedTags.lenght != options.tags.length){
+            setOptions({...options,tags:selectedTags})
+        }
+    }, [selectedTags])
 
     const onLoadPage = async () => {
         try{
@@ -40,12 +40,11 @@ export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
       },[])
 
       useEffect(()=>{
-        console.log(options.tags)
         filterCallback(options);
       },[options])
 
     return(
-        <div className="p-4 m-4 flex flex-col w-[200px] min-h-[400px] bg-white rounded-md">
+        <div className="p-4 m-4 flex flex-col w-[224px] min-h-[400px] bg-white rounded-md">
                 <div className="border-b-2 mb-4 border-primary max">
                     <p className="text-xs">Filter</p>
                 </div>
@@ -89,27 +88,14 @@ export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
                 <div className="relative group p-1 pl-0">
                     <button
                     onClick={()=>setOptions({...options, tags:options.tags.filter((el:any)=>el._id!=tag._id)})}
-                    className="absolute -right-0 -top-1 text-xs border-primary hidden group-hover:block text-secondary"
+                    className="absolute right-0 -top-0 text-xs hidden bg-white group-hover:block text-secondary"
                     >
-                        &#215;
+                        <XCircleIcon className="h-3 w-3 text-primary"/>
                     </button>
-                    <div className="rounded-md bg-primary p-1 text-xs text-white">{tag.name}</div>
+                    <div className="rounded-md border-2 border-primary p-1 text-xs text-primary">{tag.name}</div>
                 </div>
                 )}
             </div>
-            {/* <select
-                value={options.tag}
-                name="tag" 
-                id="tagFilter" 
-                onChange={handleChange}>
-                {
-                    tags.map((opt:any) => (
-                        <option value={opt._id} >         
-                            {opt.name} 
-                        </option>
-                    ))
-                }
-            </select> */}
         </div>
     )
 }
