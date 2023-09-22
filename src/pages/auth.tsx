@@ -99,16 +99,15 @@ const LoginForm = () =>{
           })
           .then((res)=>{
               setCookies("access_token", res && res.data.token);
-              window.localStorage.setItem("jariUserID", res && res.data.userID)
+              window.localStorage.setItem("jariUserID", res && res.data._id)
               navigate("/")
           })
           .catch(({response})=>{
-              if(response.status === 401) alert(response.data.message)
-              else alert("Connection Error!")
+            alert(response.data.message)
           })
       }
-      catch(err){
-          console.log(err)
+      catch(err:any){
+          alert(err.message)
       }
   }
 

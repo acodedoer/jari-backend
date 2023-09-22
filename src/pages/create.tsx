@@ -1,11 +1,13 @@
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
-import { useEffect, useState } from "react"
 import { SayingForm } from "../components/SayingForm";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useState } from "react";
 
 export const Create = () => {
-
+  
+  const [cookies] = useCookies(["access_token"]);
   const [saying, setSaying] = useState({
       saying:"",
       tags:[],
@@ -23,14 +25,19 @@ export const Create = () => {
     if(emptyTag !== -1)temp.tags.splice(emptyTag,1);
     if(temp.tags.length>0){
       try {
-        await axios.post("http://localhost:8080/sayings", temp)
+        const config = {
+          headers:{
+            "Authorization": `Bearer ${cookies.access_token}`
+          }
+        };
+        await axios.post("http://localhost:8080/sayings", temp, config)
         .then((response)=>{
           console.log(response)
           response.status === 200? alert("Saying created"!):alert("Error!");
         })
         .then(()=> navigate("/"))
-      }catch (error) {
-        alert(error)
+      }catch (err:any) {
+        alert(err.response.data.error)
       }
     }
     else{

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import { SayingForm } from "../components/SayingForm";
 import { FilterBar } from "../components/FilterBar";
+import { useCookies } from "react-cookie";
 
 type Saying = {
     saying: String
@@ -24,6 +25,7 @@ interface filter{
 export const Home = () => {
     const [sayings, setSayings] = useState<Saying[]>([]);
     const [refresh, setRefresh] = useState(true);
+    const [cookies] = useCookies(["access_token"]);
     const [filter, setFilter] = useState<filter>({
         modified: -1,
         tags:[]
@@ -32,13 +34,14 @@ export const Home = () => {
     const fetchSayings = async () => {
         let tag = "";
         filter.tags.forEach((el)=> {tag+=`${el._id},`})
+        console.log(tag)
         try {
             await axios.get(`http://localhost:8080/sayings/${tag}/${filter.modified}`)
             .then((response)=>{
                 setSayings(response.data); 
             })
-        } catch (error) {
-            alert(error);
+        } catch (error:any) {
+            alert(error.message);
         }
     };
 
@@ -73,7 +76,7 @@ export const Home = () => {
 }
 
 const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
-    
+    const [cookies] = useCookies(["access_token"]);
     const onSubmit = async (data:any) => {
         const temp = {...data};
         const userID = localStorage.getItem("jariUserID");
@@ -86,7 +89,12 @@ const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
         if(emptyTag !== -1)temp.tags.splice(emptyTag,1);
         if(temp.tags.length>0){
           try {
-            await axios.put(`http://localhost:8080/sayings/${data._id}`, {"saying":temp})
+            const config = {
+                headers:{
+                  "Authorization": `Bearer ${cookies.access_token}`
+                }
+              };
+            await axios.put(`http://localhost:8080/sayings/${data._id}`, {"saying":temp},config)
             .then((response)=>{
                 onEdit(temp)
               response.status === 200? alert("Saying updated"!):alert("Error!");
@@ -104,11 +112,20 @@ const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const deleteSaying = async (id:string) => {
-        await axios.delete(`http://localhost:8080/sayings/${id}`)
-        .then(()=>{
-            setIsDeleting(true);
-            setTimeout(()=>{onDelete()},400)
-        });
+        try {
+            const config = {
+                headers:{
+                  "Authorization": `Bearer ${cookies.access_token}`
+                }
+              };
+            await axios.delete(`http://localhost:8080/sayings/${id}`, config)
+            .then(()=>{
+                setIsDeleting(true);
+                setTimeout(()=>{onDelete()},400)
+            });
+        } catch (error) {
+            alert(error)
+        }
     }
 
     useEffect(()=>{
@@ -131,8 +148,8 @@ const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
                 </>
             }
             </div>
-            {!isEditing?
-            <div className="hidden group-hover:flex flex-col justify-between mt-6 mb-6">
+            {!isEditing && cookies.access_token?
+            <div className={`hidden group-hover:flex flex-col justify-between mt-6 mb-6`}>
                 <button onClick={()=>setIsEditing(true)} className="hover:opacity-50"><PencilSquareIcon className="h-5 w-5 text-primary"/></button>
                 <button onClick={()=>deleteSaying(data._id)} className="hover:opacity-50"><TrashIcon className="h-5 w-5 text-primary"/></button>   
             </div>:null}
