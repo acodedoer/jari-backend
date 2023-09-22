@@ -1,4 +1,3 @@
-import { MinusIcon, PlusIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { SayingForm } from "../components/SayingForm";
 import { useNavigate } from "react-router-dom";
@@ -44,22 +43,14 @@ export const Create = () => {
     }
   }
 
-  const handleChange = (event: any) => {
-    const {id, value} = event.target;
-    setSaying({...saying, [id]:value});
-  }
-    
-
-    return (
-        <div className="pt-[56px] w-screen h-screen flex flex-col items-center justify-start">
-            <h1 className="text-2xl m-8">Add New Saying</h1>
-            <div className="w-[416px] p-8 rounded-md shadow-sm bg-white">
-              <SayingForm  onSubmitCallback={onSubmit} data={saying}/>
-            </div>
-          
-        </div>
-        
-    ) 
+  return (
+      <div className="pt-[56px] w-screen h-screen flex flex-col items-center justify-start">
+          <h1 className="text-2xl m-8 text-primary">Add New Saying</h1>
+          <div className="w-[416px] p-8 rounded-md shadow-sm bg-white">
+            <SayingForm  onSubmitCallback={onSubmit} data={saying}/>
+          </div>
+      </div>
+  ) 
 }
 
 const Tag = () => {

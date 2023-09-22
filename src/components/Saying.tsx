@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { SayingForm } from "./SayingForm";
 import { Tag } from "./Tag";
+import { useFilterStore } from "../stores/filterStore";
+import { TagType } from "../types";
 
-export const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
+export const Saying = ({data, onDelete, onEdit}: any) => {
     const [cookies] = useCookies(["access_token"]);
+    
     const onSubmit = async (data:any) => {
         const temp = {...data};
         const userID = localStorage.getItem("jariUserID");
@@ -70,7 +73,7 @@ export const Saying = ({data, onDelete, onEdit, fetchSayingByTag}: any) => {
                 </div>
             {!isEditing?<>
                 <p className="mb-1">{data.saying}</p>
-                {data.tagDetails.map((el:any, i:number)=><Tag key={i} data={el} fetchSayingByTag={fetchSayingByTag}/>)}
+                {data.tagDetails.map((tag:TagType, i:number)=><Tag key={i} tag={tag} />)}
                 </>:
                 <>
                     <p className="mb-8"></p>

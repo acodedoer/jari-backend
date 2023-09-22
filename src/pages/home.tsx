@@ -9,11 +9,9 @@ import { useFilterStore } from "../stores/filterStore";
 export const Home = () => {
     const [sayings, setSayings] = useState<SayingType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const filter = useFilterStore((state) => state)
-    const addTag = useFilterStore((state) => state.addTag)
+    const filter = useFilterStore((state) => state);
 
     const fetchSayings = async () => {
-        console.log("Fecthing")
         setIsLoading(true);
         let tag = "";
         if(filter.tags.length<=0) tag = "0";
@@ -47,12 +45,11 @@ export const Home = () => {
                 <div>
                     {sayings.map((el:SayingType, i:number)=>
                         <Saying
-                        key={i}  
-                        fetchSayingByTag={(tag:TagType)=>addTag(tag)} 
-                        index={i} 
-                        data={el}
-                        onEdit = {(data:any)=>{const temp = [...sayings]; temp[i]=data; setSayings(temp) }} 
-                        onDelete={()=>null}
+                            key={i}  
+                            index={i} 
+                            data={el}
+                            onEdit = {(data:any)=>{const temp = [...sayings]; temp[i]=data; setSayings(temp) }} 
+                            onDelete={()=>null}
                         />)
                     }
                 </div>

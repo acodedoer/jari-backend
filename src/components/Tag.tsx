@@ -1,10 +1,14 @@
-export const Tag = ({data, fetchSayingByTag}:any) => { 
+import { useFilterStore } from "../stores/filterStore"
+import { TagType } from "../types"
+
+export const Tag = ({tag}:{tag:TagType}) => { 
+    const addTag = useFilterStore((state) => state.addTag)
     return(
         <button 
-            onClick={()=>fetchSayingByTag(data)} 
+            onClick={()=>addTag(tag)} 
             className="rounded-md text-xs text-white bg-primary p-1 mr-1 hover:opacity-50"
         >
-            {data.name}
+            {tag.name}
         </button>
     )
 }
