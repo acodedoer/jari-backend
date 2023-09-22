@@ -13,6 +13,8 @@ export const Home = () => {
     const addTag = useFilterStore((state) => state.addTag)
 
     const fetchSayings = async () => {
+        console.log("Fecthing")
+        setIsLoading(true);
         let tag = "";
         if(filter.tags.length<=0) tag = "0";
         else filter.tags.forEach((el:TagType)=> {tag+=`${el._id},`})
@@ -37,6 +39,7 @@ export const Home = () => {
 
     return(
         <div className="pt-[56px] w-full flex flex-row justify-center relative">
+             {!isLoading?
             <>
                 <div className="absolute left-0">
                     <FilterBar/>
@@ -54,8 +57,7 @@ export const Home = () => {
                     }
                 </div>
             </>
-            
-            {!isLoading?null:<p>Loading...</p>}
+            :<p>Loading...</p>}
         </div>
     )
 }
