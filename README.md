@@ -1,46 +1,39 @@
-# Getting Started with Create React App
+# jari - A Sayings Database
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the frontend repository of jari, a sayings and proverbs database. [Jari's server can be found in this repo](https://github.com/acodedoer/jari-server), while the [mobile app can be found in this repo](https://github.com/acodedoer/jari-mobile-app). This frontend is meant to serve as an administrative interface for managing the collection of sayings and proverbs that are presented to users through the mobile app.
 
-## Available Scripts
+## Features
+* User Authentication: User accounts are managed to ensure that only authenticated users can add, update and delete proverbs.
+* Add Proverbs: Registered users can contribute to the database by submitting new provers.
+* Edit/Delete Proverbs: Registered users can edit or delete proverbs. Changes are tracked to ensure transparency and accountability.
+* Tags: Tag proverbs with up to five topics or descriptions to easily describe, manage and group.
+* Filter: filter proverbs by tags to easily find sayings relevant to a particular topic or area.
 
-In the project directory, you can run:
+## Features to Add
+* Search - to search all proverbs by text
+* Admin Control - to manage registered users.
+* Visibility - add a visibility property for proverbs which determines whether or not they are retrieved and displayed by the mobile app.
 
-### `npm start`
+## Tech Stack
+* Typescript: for enhanced code quality, type safety, and  developer productivity.
+* React: Built using react functional components.
+* Zustland: State management using Zustland to provide a clean and efficient developer experience.
+* Axios: HTTP requests to the backend API.
+* Tailwind CSS: Styling the application.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Getting Started
+1. Clone this repo to your local machine.\
+`git clone https://github.com/acodedoer/jari-backend.git`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+2. Navigate to the project directory.\
+`cd jari-backend`
 
-### `npm test`
+3. Install the dependencies.\
+`npm install`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. Start the project.\
+`npm run start`
 
-### `npm run build`
+5. Make sure you also clone and start the [jari-server](https://github.com/acodedoer/jari-server)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
