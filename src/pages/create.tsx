@@ -32,7 +32,6 @@ export const Create = () => {
         };
         await axios.post("http://localhost:8080/sayings", temp, config)
         .then((response)=>{
-          console.log(response)
           response.status === 200? alert("Saying created"!):alert("Error!");
         })
         .then(()=> navigate("/"))

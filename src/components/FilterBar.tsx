@@ -1,21 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { XCircleIcon } from "@heroicons/react/24/solid";
-export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
+import { useFilterStore } from "../stores/filterStore";
+
+export const FilterBar = () => {
     
     const [tags, setTags] = useState([]);
     const [tagSearch, setTagSearch] = useState<string>("");
 
-    const [options, setOptions] = useState({    
-        modified: -1,
-        tags: selectedTags
-    })
-
-    useEffect(()=>{
-        if(selectedTags.lenght != options.tags.length){
-            setOptions({...options,tags:selectedTags})
-        }
-    }, [selectedTags])
+    const filter = useFilterStore((state) => state)
+    const setSort = useFilterStore((state) => state.setSort)
+    const addTag = useFilterStore((state) => state.addTag)
+    const removeTag = useFilterStore((state) => state.removeTag)
 
     const onLoadPage = async () => {
         try{
@@ -31,17 +27,10 @@ export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
         }
       }
 
-      const handleChange = (e:any) => {
-        setOptions({...options, [e.target.name]:e.target.value})
-      }
 
       useEffect(()=>{
         onLoadPage()
       },[])
-
-      useEffect(()=>{
-        filterCallback(options);
-      },[options])
 
     return(
         <div className="p-4 m-4 flex flex-col w-[224px] min-h-[400px] bg-white rounded-md">
@@ -51,7 +40,7 @@ export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
             <select 
                 name="modified" 
                 id="modifiedFilter" 
-                onChange={handleChange}
+                onChange={(e)=>setSort(e.target.value)}
                 className="text-sm mb-4 ring-1 ring-background rounded-md p-1"
             >
                 <option value={-1}>Sort by Recently Modified</option>
@@ -68,13 +57,13 @@ export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
             <ul className="list-none border-background mb-4 relative">
                 {tagSearch.length>0 &&<div className="absolute z-50 bg-white w-full border-2">
             {
-                 tags.filter((el:any)=>el.name.includes(tagSearch)).map((tag:any) =>{
+                 tags.filter((el:any)=>el.name.includes(tagSearch)).map((tag:any, index:number) =>{
                     return(
-                        <li className="m-1 bg-background pr-1 pl-1">
+                        <li key={index} className="m-1 bg-background pr-1 pl-1">
                             <button 
                                 className="hover:opacity-30 w-full text-left"
                                 onClick={()=>{
-                                    setOptions({...options, tags:[...options.tags,tag]});
+                                    addTag(tag)
                                     setTagSearch("")
                                 }}
                             >{tag.name}</button></li>
@@ -84,10 +73,10 @@ export const FilterBar = ({filterCallback, selectedTags=[]}: any) => {
             </div>}
             </ul>
             <div className="flex flex-row flex-wrap">
-                {options.tags.map((tag:any)=>
-                <div className="relative group p-1 pl-0">
+                {filter.tags.map((tag:any, index:number)=>
+                <div key={index} className="relative group p-1 pl-0">
                     <button
-                    onClick={()=>setOptions({...options, tags:options.tags.filter((el:any)=>el._id!=tag._id)})}
+                    onClick={()=>removeTag(tag)}
                     className="absolute right-0 -top-0 text-xs hidden bg-white group-hover:block text-secondary"
                     >
                         <XCircleIcon className="h-3 w-3 text-primary"/>
