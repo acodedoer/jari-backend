@@ -10,7 +10,7 @@ export const RegisterForm = () => {
     const onSubmit = async (event:React.SyntheticEvent<HTMLInputElement>) => {
         event.preventDefault();
         try{
-            await axios.post("http://localhost:8080/auth/register", data)
+            await axios.post(`${process.env.REACT_APP_API_PATH}/auth/register`, data)
             .then((res)=>alert("Registration Complete! Please login using your registered credentials."))
             .then(()=> {setData(initialData)})
             .catch((err)=>alert(err.response.data.message))

@@ -18,7 +18,7 @@ export const Home = () => {
         else filter.tags.forEach((el:TagType)=> {tag+=`${el._id},`})
         try {
             setIsLoading(true)
-            await axios.get(`http://localhost:8080/sayings/${tag}/${filter.sort}`)
+            await axios.get(`${process.env.REACT_APP_API_PATH}/sayings/${tag}/${filter.sort}`)
             .then((response)=>{
                 setSayings(response.data); 
                 setIsLoading(false);

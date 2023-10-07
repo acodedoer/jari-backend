@@ -14,7 +14,7 @@ export const LoginForm = () =>{
     const onSubmit = async (event:SubmitEvent) => {
         event.preventDefault();
         try{
-            await axios.post("http://localhost:8080/auth/login", {
+            await axios.post(`${process.env.REACT_APP_API_PATH}/auth/login`, {
                 email,
                 password
             })

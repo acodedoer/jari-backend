@@ -29,7 +29,7 @@ export const Create = () => {
             "Authorization": `Bearer ${cookies.access_token}`
           }
         };
-        await axios.post("http://localhost:8080/sayings", temp, config)
+        await axios.post(`${process.env.REACT_APP_API_PATH}/sayings`, temp, config)
         .then((response)=>{
           response.status === 200? alert("Saying created"!):alert("Error!");
         })

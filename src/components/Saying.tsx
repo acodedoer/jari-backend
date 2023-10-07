@@ -27,7 +27,7 @@ export const Saying = ({data, onDelete, onEdit}: any) => {
                   "Authorization": `Bearer ${cookies.access_token}`
                 }
               };
-            await axios.put(`http://localhost:8080/sayings/${data._id}`, {"saying":temp},config)
+            await axios.put(`${process.env.REACT_APP_API_PATH}/sayings/${data._id}`, {"saying":temp},config)
             .then((response)=>{
                 onEdit(temp)
               response.status === 200? alert("Saying updated"!):alert("Error!");
@@ -51,7 +51,7 @@ export const Saying = ({data, onDelete, onEdit}: any) => {
                   "Authorization": `Bearer ${cookies.access_token}`
                 }
               };
-            await axios.delete(`http://localhost:8080/sayings/${id}`, config)
+            await axios.delete(`${process.env.REACT_APP_API_PATH}/sayings/${id}`, config)
             .then(()=>{
                 setIsDeleting(true);
                 setTimeout(()=>{onDelete()},400)

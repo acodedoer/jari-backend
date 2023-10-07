@@ -15,7 +15,7 @@ export const FilterBar = () => {
 
     const onLoadPage = async () => {
         try{
-            await axios.get("http://localhost:8080/tags")
+            await axios.get(`${process.env.REACT_APP_API_PATH}/tags`)
             .then(({data})=> {
               const temp:any = [...data];
               temp.unshift({_id:"", name:""});
